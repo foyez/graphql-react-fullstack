@@ -6,31 +6,37 @@ import {
   UpdateDateColumn,
   BaseEntity,
 } from 'typeorm'
+import { ObjectType, Field } from 'type-graphql'
 
-// enum Gender {
+// export enum Gender {
 //   male = 'male',
 //   female = 'female',
 //   undisclosed = 'undisclosed',
 // }
 
+@ObjectType()
 @Entity()
 export class User extends BaseEntity {
+  @Field()
   @PrimaryGeneratedColumn('uuid')
   id: string
 
-  @Column('varchar', { length: 50 })
+  @Field()
+  @Column({ type: 'varchar', length: 50, unique: true })
   username: string
 
-  // @Column({
-  //   type: 'enum',
-  //   enum: Gender,
-  //   default: Gender.male,
-  // })
-  // gender: Gender
+  @Field()
+  @Column({ type: 'varchar', length: 100, unique: true })
+  email: string
 
+  @Column()
+  password: string
+
+  @Field()
   @CreateDateColumn()
   createdAt: Date
 
+  @Field()
   @UpdateDateColumn()
   updatedAt: Date
 }

@@ -3,9 +3,9 @@ import path from 'path'
 import { createConnection } from 'typeorm'
 
 import { __prod__ } from './constants'
-import { User } from './entity/User'
 import { createServer } from './createServer'
 import { Post } from './entity/Post'
+import { User } from './entity/User'
 
 const main = async () => {
   await createConnection({
@@ -14,16 +14,17 @@ const main = async () => {
     port: 5432,
     username: 'foyez',
     password: 'testpass',
-    database: 'graphql-full-stack',
+    database: 'graphql',
     // synchronize: !__prod__,
     logging: true,
     migrations: [path.join(__dirname, './migration/*')],
-    entities: [User, Post],
+    entities: [Post, User],
   })
   // await conn.runMigrations()
 
   // await User.create({ username: 'foyez' }).save()
   // await Post.create({ title: 'Test post' }).save()
+  // await User.delete({})
   // const users = await User.find()
   // console.log(users)
 

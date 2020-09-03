@@ -15,9 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 require("reflect-metadata");
 const path_1 = __importDefault(require("path"));
 const typeorm_1 = require("typeorm");
-const User_1 = require("./entity/User");
 const createServer_1 = require("./createServer");
 const Post_1 = require("./entity/Post");
+const User_1 = require("./entity/User");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield typeorm_1.createConnection({
         type: 'postgres',
@@ -25,10 +25,10 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         port: 5432,
         username: 'foyez',
         password: 'testpass',
-        database: 'graphql-full-stack',
+        database: 'graphql',
         logging: true,
         migrations: [path_1.default.join(__dirname, './migration/*')],
-        entities: [User_1.User, Post_1.Post],
+        entities: [Post_1.Post, User_1.User],
     });
     const server = yield createServer_1.createServer();
     server.listen(4000, () => {

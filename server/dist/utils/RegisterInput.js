@@ -9,43 +9,24 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.User = void 0;
-const typeorm_1 = require("typeorm");
+exports.RegisterInput = void 0;
 const type_graphql_1 = require("type-graphql");
-let User = class User extends typeorm_1.BaseEntity {
+let RegisterInput = class RegisterInput {
 };
 __decorate([
     type_graphql_1.Field(),
-    typeorm_1.PrimaryGeneratedColumn('uuid'),
     __metadata("design:type", String)
-], User.prototype, "id", void 0);
+], RegisterInput.prototype, "username", void 0);
 __decorate([
     type_graphql_1.Field(),
-    typeorm_1.Column({ type: 'varchar', length: 50, unique: true }),
     __metadata("design:type", String)
-], User.prototype, "username", void 0);
+], RegisterInput.prototype, "email", void 0);
 __decorate([
     type_graphql_1.Field(),
-    typeorm_1.Column({ type: 'varchar', length: 100, unique: true }),
     __metadata("design:type", String)
-], User.prototype, "email", void 0);
-__decorate([
-    typeorm_1.Column(),
-    __metadata("design:type", String)
-], User.prototype, "password", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    typeorm_1.CreateDateColumn(),
-    __metadata("design:type", Date)
-], User.prototype, "createdAt", void 0);
-__decorate([
-    type_graphql_1.Field(),
-    typeorm_1.UpdateDateColumn(),
-    __metadata("design:type", Date)
-], User.prototype, "updatedAt", void 0);
-User = __decorate([
-    type_graphql_1.ObjectType(),
-    typeorm_1.Entity()
-], User);
-exports.User = User;
-//# sourceMappingURL=User.js.map
+], RegisterInput.prototype, "password", void 0);
+RegisterInput = __decorate([
+    type_graphql_1.InputType()
+], RegisterInput);
+exports.RegisterInput = RegisterInput;
+//# sourceMappingURL=RegisterInput.js.map
