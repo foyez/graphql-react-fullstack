@@ -17,6 +17,7 @@ const path_1 = __importDefault(require("path"));
 const typeorm_1 = require("typeorm");
 const User_1 = require("./entity/User");
 const createServer_1 = require("./createServer");
+const Post_1 = require("./entity/Post");
 const main = () => __awaiter(void 0, void 0, void 0, function* () {
     yield typeorm_1.createConnection({
         type: 'postgres',
@@ -27,7 +28,7 @@ const main = () => __awaiter(void 0, void 0, void 0, function* () {
         database: 'graphql-full-stack',
         logging: true,
         migrations: [path_1.default.join(__dirname, './migration/*')],
-        entities: [User_1.User],
+        entities: [User_1.User, Post_1.Post],
     });
     const server = yield createServer_1.createServer();
     server.listen(4000, () => {

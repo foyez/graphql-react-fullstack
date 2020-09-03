@@ -5,6 +5,7 @@ import { createConnection } from 'typeorm'
 import { __prod__ } from './constants'
 import { User } from './entity/User'
 import { createServer } from './createServer'
+import { Post } from './entity/Post'
 
 const main = async () => {
   await createConnection({
@@ -17,11 +18,12 @@ const main = async () => {
     // synchronize: !__prod__,
     logging: true,
     migrations: [path.join(__dirname, './migration/*')],
-    entities: [User],
+    entities: [User, Post],
   })
   // await conn.runMigrations()
 
   // await User.create({ username: 'foyez' }).save()
+  // await Post.create({ title: 'Test post' }).save()
   // const users = await User.find()
   // console.log(users)
 
