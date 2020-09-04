@@ -2,6 +2,7 @@ import { ThemeProvider, CSSReset } from '@chakra-ui/core'
 import { createClient, Provider } from 'urql'
 
 import theme from '../theme'
+import { Layout } from '../components/Layout'
 
 const client = createClient({
   url: 'http://localhost:4000/graphql',
@@ -15,7 +16,9 @@ function MyApp({ Component, pageProps }: any) {
     <Provider value={client}>
       <ThemeProvider theme={theme}>
         <CSSReset />
-        <Component {...pageProps} />
+        <Layout>
+          <Component {...pageProps} />
+        </Layout>
       </ThemeProvider>
     </Provider>
   )
