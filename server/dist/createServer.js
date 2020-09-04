@@ -16,16 +16,39 @@ exports.createServer = void 0;
 const express_1 = __importDefault(require("express"));
 const apollo_server_express_1 = require("apollo-server-express");
 const type_graphql_1 = require("type-graphql");
+const ioredis_1 = __importDefault(require("ioredis"));
+const express_session_1 = __importDefault(require("express-session"));
+const connect_redis_1 = __importDefault(require("connect-redis"));
 const hello_1 = require("./resolvers/hello");
 const post_1 = require("./resolvers/post");
 const user_1 = require("./resolvers/user");
+const constants_1 = require("./constants");
 exports.createServer = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
+    const RedisStore = connect_redis_1.default(express_session_1.default);
+    const redisClient = new ioredis_1.default();
+    app.use(express_session_1.default({
+        name: 'qid',
+        store: new RedisStore({
+            client: redisClient,
+            disableTouch: true,
+        }),
+        cookie: {
+            maxAge: 1000 * 60 * 60 * 24 * 365 * 10,
+            httpOnly: true,
+            sameSite: 'lax',
+            secure: constants_1.__prod__,
+        },
+        saveUninitialized: false,
+        secret: 'keyboard cat',
+        resave: false,
+    }));
     const apolloServer = new apollo_server_express_1.ApolloServer({
         schema: yield type_graphql_1.buildSchema({
             resolvers: [hello_1.HelloResolver, post_1.PostResolver, user_1.UserResolver],
             validate: false,
         }),
+        context: ({ req, res, }) => ({ req, res }),
     });
     apolloServer.applyMiddleware({ app });
     app.get('/', (_, res) => {

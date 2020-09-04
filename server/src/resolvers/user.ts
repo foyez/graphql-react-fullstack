@@ -1,9 +1,19 @@
-import { Resolver, Mutation, Field, Arg, ObjectType } from 'type-graphql'
+import {
+  Resolver,
+  Mutation,
+  Field,
+  Arg,
+  ObjectType,
+  Ctx,
+  Query,
+} from 'type-graphql'
 import argon2 from 'argon2'
 
 import { User } from '../entity/User'
 import { RegisterInput } from '../utils/RegisterInput'
 import { validateRegister } from '../utils/validateRegister'
+import { MyContext } from '../types'
+import { errorHandlers } from '../utils/errorHandlers'
 
 @ObjectType()
 export class FieldError {
@@ -28,6 +38,7 @@ export class UserResolver {
   @Mutation(() => UserResponse)
   async register(
     @Arg('credentials') credentials: RegisterInput,
+    @Ctx() { req }: MyContext,
   ): Promise<UserResponse> {
     const errors = validateRegister(credentials)
     if (errors) {
@@ -45,27 +56,11 @@ export class UserResolver {
     try {
       await user.save()
     } catch (err) {
-      // duplicate username error
-      if (err.code === '23505' && err.detail.includes('username')) {
-        return {
-          errors: [
-            {
-              field: 'username',
-              message: 'username already taken',
-            },
-          ],
-        }
-      } else if (err.code === '23505' && err.detail.includes('email')) {
-        return {
-          errors: [
-            {
-              field: 'email',
-              message: 'email already taken',
-            },
-          ],
-        }
-      }
+      return errorHandlers(err)
     }
+
+    // store user session
+    req.session.userId = user.id
 
     return { user }
   }
@@ -74,6 +69,7 @@ export class UserResolver {
   async login(
     @Arg('username') username: string,
     @Arg('password') password: string,
+    @Ctx() { req }: MyContext,
   ): Promise<UserResponse> {
     const user = await User.findOne({ username })
     if (!user) {
@@ -98,6 +94,23 @@ export class UserResolver {
       }
     }
 
+    // store user session
+    req.session.userId = user.id
+
     return { user }
+  }
+
+  @Query(() => User, { nullable: true })
+  async me(@Ctx() { req }: MyContext) {
+    // console.log(req.session)
+    const { userId } = req.session
+
+    // not logged in
+    if (!userId) {
+      return null
+    }
+
+    const user = await User.findOne({ id: userId })
+    return user
   }
 }

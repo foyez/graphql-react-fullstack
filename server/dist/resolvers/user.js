@@ -30,6 +30,7 @@ const argon2_1 = __importDefault(require("argon2"));
 const User_1 = require("../entity/User");
 const RegisterInput_1 = require("../utils/RegisterInput");
 const validateRegister_1 = require("../utils/validateRegister");
+const errorHandlers_1 = require("../utils/errorHandlers");
 let FieldError = class FieldError {
 };
 __decorate([
@@ -58,7 +59,7 @@ UserResponse = __decorate([
     type_graphql_1.ObjectType()
 ], UserResponse);
 let UserResolver = class UserResolver {
-    register(credentials) {
+    register(credentials, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
             const errors = validateRegister_1.validateRegister(credentials);
             if (errors) {
@@ -75,31 +76,13 @@ let UserResolver = class UserResolver {
                 yield user.save();
             }
             catch (err) {
-                if (err.code === '23505' && err.detail.includes('username')) {
-                    return {
-                        errors: [
-                            {
-                                field: 'username',
-                                message: 'username already taken',
-                            },
-                        ],
-                    };
-                }
-                else if (err.code === '23505' && err.detail.includes('email')) {
-                    return {
-                        errors: [
-                            {
-                                field: 'email',
-                                message: 'email already taken',
-                            },
-                        ],
-                    };
-                }
+                return errorHandlers_1.errorHandlers(err);
             }
+            req.session.userId = user.id;
             return { user };
         });
     }
-    login(username, password) {
+    login(username, password, { req }) {
         return __awaiter(this, void 0, void 0, function* () {
             const user = yield User_1.User.findOne({ username });
             if (!user) {
@@ -123,25 +106,45 @@ let UserResolver = class UserResolver {
                     ],
                 };
             }
+            req.session.userId = user.id;
             return { user };
+        });
+    }
+    me({ req }) {
+        return __awaiter(this, void 0, void 0, function* () {
+            const { userId } = req.session;
+            if (!userId) {
+                return null;
+            }
+            const user = yield User_1.User.findOne({ id: userId });
+            return user;
         });
     }
 };
 __decorate([
     type_graphql_1.Mutation(() => UserResponse),
     __param(0, type_graphql_1.Arg('credentials')),
+    __param(1, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [RegisterInput_1.RegisterInput]),
+    __metadata("design:paramtypes", [RegisterInput_1.RegisterInput, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "register", null);
 __decorate([
     type_graphql_1.Mutation(() => UserResponse),
     __param(0, type_graphql_1.Arg('username')),
     __param(1, type_graphql_1.Arg('password')),
+    __param(2, type_graphql_1.Ctx()),
     __metadata("design:type", Function),
-    __metadata("design:paramtypes", [String, String]),
+    __metadata("design:paramtypes", [String, String, Object]),
     __metadata("design:returntype", Promise)
 ], UserResolver.prototype, "login", null);
+__decorate([
+    type_graphql_1.Query(() => User_1.User, { nullable: true }),
+    __param(0, type_graphql_1.Ctx()),
+    __metadata("design:type", Function),
+    __metadata("design:paramtypes", [Object]),
+    __metadata("design:returntype", Promise)
+], UserResolver.prototype, "me", null);
 UserResolver = __decorate([
     type_graphql_1.Resolver()
 ], UserResolver);
