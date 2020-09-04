@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express'
 import { ApolloServer } from 'apollo-server-express'
 import { buildSchema } from 'type-graphql'
+import cors from 'cors'
 import Redis from 'ioredis'
 import session from 'express-session'
 import connectRedis from 'connect-redis'
@@ -17,6 +18,13 @@ export const createServer = async () => {
   // SETUP REDIS SESSION STORAGE
   const RedisStore = connectRedis(session)
   const redisClient = new Redis()
+
+  app.use(
+    cors({
+      origin: 'http://localhost:3000',
+      credentials: true,
+    }),
+  )
 
   app.use(
     session({
@@ -51,7 +59,7 @@ export const createServer = async () => {
     }): MyContext => ({ req, res }),
   })
 
-  apolloServer.applyMiddleware({ app })
+  apolloServer.applyMiddleware({ app, cors: false })
 
   // test express server
   app.get('/', (_, res) => {

@@ -1,5 +1,5 @@
 {
-  "name": "with-chakra-ui",
+  "name": "graphql-nextjs",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -7,15 +7,22 @@
     "build": "next build",
     "start": "next start"
   },
+  "engines": {
+    "node": ">=12.18.3",
+    "npm": ">=6.14.6",
+    "yarn": ">=1.22.5"
+  },
   "dependencies": {
     "@chakra-ui/core": "^0.5.2",
     "@emotion/core": "^10.0.27",
     "@emotion/styled": "^10.0.27",
     "emotion-theming": "^10.0.27",
     "formik": "^2.1.5",
+    "graphql": "^15.3.0",
     "next": "^9.1.7",
     "react": "^16.12.0",
-    "react-dom": "^16.12.0"
+    "react-dom": "^16.12.0",
+    "urql": "^1.10.0"
   },
   "license": "MIT",
   "devDependencies": {
