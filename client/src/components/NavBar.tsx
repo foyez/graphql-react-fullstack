@@ -28,7 +28,7 @@ export const NavBar: React.FC = () => {
   }
 
   return (
-    <Flex bg="tomato" p={4}>
+    <Flex bg="tan" p={4}>
       <NextLink href="/">
         <Link>Home</Link>
       </NextLink>
