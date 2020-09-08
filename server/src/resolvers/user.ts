@@ -14,6 +14,7 @@ import { RegisterInput } from '../utils/RegisterInput'
 import { validateRegister } from '../utils/validateRegister'
 import { MyContext } from '../types'
 import { errorHandlers } from '../utils/errorHandlers'
+import { COOKIE_NAME } from '../constants'
 
 @ObjectType()
 export class FieldError {
@@ -112,5 +113,21 @@ export class UserResolver {
 
     const user = await User.findOne({ id: userId })
     return user
+  }
+
+  @Mutation(() => Boolean)
+  logout(@Ctx() { req, res }: MyContext) {
+    return new Promise((resolve) =>
+      req.session.destroy((err) => {
+        res.clearCookie(COOKIE_NAME)
+
+        if (err) {
+          resolve(false)
+          return
+        }
+
+        resolve(true)
+      }),
+    )
   }
 }

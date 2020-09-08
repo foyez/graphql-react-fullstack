@@ -9,7 +9,7 @@ import connectRedis from 'connect-redis'
 import { HelloResolver } from './resolvers/hello'
 import { PostResolver } from './resolvers/post'
 import { UserResolver } from './resolvers/user'
-import { __prod__ } from './constants'
+import { __prod__, COOKIE_NAME } from './constants'
 import { MyContext } from './types'
 
 export const createServer = async () => {
@@ -28,7 +28,7 @@ export const createServer = async () => {
 
   app.use(
     session({
-      name: 'qid',
+      name: COOKIE_NAME,
       store: new RedisStore({
         client: redisClient,
         disableTouch: true,
