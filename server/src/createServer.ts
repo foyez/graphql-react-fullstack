@@ -17,7 +17,7 @@ export const createServer = async () => {
 
   // SETUP REDIS SESSION STORAGE
   const RedisStore = connectRedis(session)
-  const redisClient = new Redis()
+  const redis = new Redis()
 
   app.use(
     cors({
@@ -30,7 +30,7 @@ export const createServer = async () => {
     session({
       name: COOKIE_NAME,
       store: new RedisStore({
-        client: redisClient,
+        client: redis,
         disableTouch: true,
       }),
       cookie: {
@@ -56,7 +56,7 @@ export const createServer = async () => {
     }: {
       req: Request & { session: Express.Session }
       res: Response
-    }): MyContext => ({ req, res }),
+    }): MyContext => ({ req, res, redis }),
   })
 
   apolloServer.applyMiddleware({ app, cors: false })

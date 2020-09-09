@@ -27,7 +27,7 @@ const constants_1 = require("./constants");
 exports.createServer = () => __awaiter(void 0, void 0, void 0, function* () {
     const app = express_1.default();
     const RedisStore = connect_redis_1.default(express_session_1.default);
-    const redisClient = new ioredis_1.default();
+    const redis = new ioredis_1.default();
     app.use(cors_1.default({
         origin: 'http://localhost:3000',
         credentials: true,
@@ -35,7 +35,7 @@ exports.createServer = () => __awaiter(void 0, void 0, void 0, function* () {
     app.use(express_session_1.default({
         name: constants_1.COOKIE_NAME,
         store: new RedisStore({
-            client: redisClient,
+            client: redis,
             disableTouch: true,
         }),
         cookie: {
@@ -53,7 +53,7 @@ exports.createServer = () => __awaiter(void 0, void 0, void 0, function* () {
             resolvers: [hello_1.HelloResolver, post_1.PostResolver, user_1.UserResolver],
             validate: false,
         }),
-        context: ({ req, res, }) => ({ req, res }),
+        context: ({ req, res, }) => ({ req, res, redis }),
     });
     apolloServer.applyMiddleware({ app, cors: false });
     app.get('/', (_, res) => {

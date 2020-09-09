@@ -15,6 +15,15 @@ export const validateRegister = (
     ]
   }
 
+  if (username.includes('@')) {
+    return [
+      {
+        field: 'username',
+        message: 'cannot include an @',
+      },
+    ]
+  }
+
   const pattern = /[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*@(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?/
   if (!pattern.test(email.trim())) {
     return [
