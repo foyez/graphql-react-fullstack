@@ -24,7 +24,7 @@ const main = async () => {
 
   // await User.create({ username: 'foyez' }).save()
   // await Post.create({ title: 'Test post' }).save()
-  // await User.delete({})
+  // await Post.delete({})
   // const users = await User.find()
   // console.log(users)
 

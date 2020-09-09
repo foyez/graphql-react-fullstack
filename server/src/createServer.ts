@@ -9,7 +9,7 @@ import connectRedis from 'connect-redis'
 import { HelloResolver } from './resolvers/hello'
 import { PostResolver } from './resolvers/post'
 import { UserResolver } from './resolvers/user'
-import { __prod__, COOKIE_NAME } from './constants'
+import { __prod__, COOKIE_NAME, CLIENT_BASE_URI } from './constants'
 import { MyContext } from './types'
 
 export const createServer = async () => {
@@ -21,7 +21,7 @@ export const createServer = async () => {
 
   app.use(
     cors({
-      origin: 'http://localhost:3000',
+      origin: CLIENT_BASE_URI,
       credentials: true,
     }),
   )

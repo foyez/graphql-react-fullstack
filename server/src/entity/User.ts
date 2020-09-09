@@ -5,8 +5,10 @@ import {
   CreateDateColumn,
   UpdateDateColumn,
   BaseEntity,
+  OneToMany,
 } from 'typeorm'
 import { ObjectType, Field } from 'type-graphql'
+import { Post } from './Post'
 
 // export enum Gender {
 //   male = 'male',
@@ -31,6 +33,9 @@ export class User extends BaseEntity {
 
   @Column()
   password: string
+
+  @OneToMany(() => Post, (post) => post.creator)
+  posts: Post[]
 
   @Field()
   @CreateDateColumn()

@@ -15,7 +15,11 @@ import { RegisterInput } from '../utils/RegisterInput'
 import { validateRegister } from '../utils/validateRegister'
 import { MyContext } from '../types'
 import { errorHandlers } from '../utils/errorHandlers'
-import { COOKIE_NAME, FORGOT_PASSWORD_PREFIX } from '../constants'
+import {
+  COOKIE_NAME,
+  FORGOT_PASSWORD_PREFIX,
+  CLIENT_BASE_URI,
+} from '../constants'
 import { sendEmail } from '../utils/sendEmail'
 
 @ObjectType()
@@ -159,7 +163,7 @@ export class UserResolver {
 
     await sendEmail(
       email,
-      `<a href="http://localhost:3000/change-password/${token}">reset password</a>`,
+      `<a href="${CLIENT_BASE_URI}/change-password/${token}">reset password</a>`,
     )
 
     return true
