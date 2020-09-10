@@ -23,7 +23,9 @@ const Login: React.FC = () => {
           if (data?.login.errors) {
             setErrors(toErrorMap(data.login.errors))
           } else if (data?.login.user) {
-            router.push('/')
+            const routeTo =
+              typeof router.query.next === 'string' ? router.query.next : '/'
+            router.push(routeTo)
           }
         }}
       >
