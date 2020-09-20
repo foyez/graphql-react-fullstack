@@ -7,6 +7,7 @@ import {
   Field,
   Ctx,
   UseMiddleware,
+  Int,
 } from 'type-graphql'
 
 import { Post } from '../entity/Post'
@@ -26,13 +27,28 @@ class PostInput {
 @Resolver()
 export class PostResolver {
   @Query(() => [Post])
-  posts(): Promise<Post[]> {
-    return Post.find()
+  posts(
+    @Arg('limit', () => Int) limit: number,
+    @Arg('cursor', () => String, { nullable: true }) cursor: string | null,
+  ): Promise<Post[]> {
+    const realLimit = Math.min(20, limit)
+
+    const qb = getConnection()
+      .getRepository(Post)
+      .createQueryBuilder('p')
+      .orderBy('"createdAt"', 'DESC')
+      .take(realLimit)
+
+    if (cursor) {
+      qb.where('"createdAt" < :cursor', { cursor })
+    }
+
+    return qb.getMany()
   }
 
   @Query(() => Post, { nullable: true })
   post(@Arg('id', () => String) id: string): Promise<Post | undefined> {
-    return Post.findOne({ id })
+    return Post.findOne(id)
   }
 
   @Mutation(() => Post)
